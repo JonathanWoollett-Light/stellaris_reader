@@ -1,5 +1,8 @@
 use time::Date;
-use crate::shared::Ethos;
+use crate::{
+    shared::{Ethos,Flag},
+    modules::Modules
+};
 use std::collections::VecDeque;
 
 pub struct Country {
@@ -7,7 +10,7 @@ pub struct Country {
     color_index: i64,
     name: String,
     adjective: String,
-    custom_name: bool,
+    custom_name: Option<bool>, // If it's false, field is not present.
     tech_status: TechStatus,
     last_date_was_human: Date,
     last_date_war_lost: Date,
@@ -28,7 +31,7 @@ pub struct Country {
     sapient: u64,
     graphical_culture: String,
     city_graphical_culture: String,
-    room: String,
+    room: Option<String>,
     ai: AI,
     capital: u64,
     species_index: u64,
@@ -42,7 +45,11 @@ pub struct Country {
     visited_objects: Vec<u64>,
     intel_level: Vec<u64>,
     highest_intel_level: Vec<u64>,
-    flags: Vec<u64>,
+    flags: Vec<Flag>,
+    faction: // THIS IS SOME MESS OF AN ENUM VALUE... FML
+    name_list: Option<String>,
+    ship_names: Option<Vec<(String,u64)>>,
+    ruler: Option<u64>,
     control_groups: VecDeque<ControlGroup>,
     ship_prefix: String,
     active_policies: Vec<Policy>,
@@ -57,7 +64,17 @@ pub struct Country {
     controlled_planets: Vec<u64>,
     ship_design: Vec<u64>,
     r#type: String,
-    modules: Modules
+    modules: Modules,
+    initialized: bool,
+    customization: String,
+    last_changed_country_type: Date,
+    hyperlane_systems: Vec<u64>,
+    sectors: Vec<Sector>,
+    given_value: u64,
+    num_upgrade_starbase: u64,
+    starbase_capacity: u64,
+    employable_pops: u64,
+    owned_species: Vec<u64>
 }
 struct CountryFlag {
     icon: Image,
@@ -70,12 +87,15 @@ struct Image {
 }
 struct TechStatus {
     techs: Vec<Tech>,
+    physics_queue: Option<TechQueued>,
+    society_queue: Option<TechQueued>,
+    engineering_queue: Option<TechQueued>,
     stored_techpoints: [f32;3],
     alternatives: TechAlternatives,
-    potential: Vec<(String,u64)>,
+    potential: Option<Vec<(String,u64)>>,
     leaders: [u64;3],
-    always_available_tech: String,
-    last_increased_tech: String,
+    always_available_tech: Option<String>,
+    last_increased_tech: Option<String>,
 }
 struct Tech {
     technology: String,
@@ -85,6 +105,11 @@ struct TechAlternatives {
     physics: Vec<String>,
     society: Vec<String>,
     engineering: Vec<String>
+}
+struct TechQueued {
+    progress: f32,
+    technology: String,
+    date: Date
 }
 struct Budget {
     current_month: CurrentMonth,
@@ -141,23 +166,17 @@ struct Government {
     civics: Vec<String>,
     origin: String
 }
-
 struct ControlGroup {
     r#type: u64,
     id: u64
 }
-
 struct Policy {
     policy: String,
     selected: String
 }
 
-struct Modules {
-    standard_event_module: StandardEventModule
-}
-struct StandardEventModule {
-    delayed_events: Vec<DelayedEvent>
-}
-struct DelayedEvent {
-    
+struct Sector {
+    resources: u64,
+    monthly_transfer: Vec<f32>, // placeholder, I don't know what goes here
+    owned: Vec<f32>
 }
