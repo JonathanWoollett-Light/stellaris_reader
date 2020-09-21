@@ -1,4 +1,3 @@
-
 pub use crate::reader::*;
 mod reader;
 
@@ -8,3 +7,7 @@ mod galactic_object;
 
 mod modules;
 mod country;
+
+mod federation;
+
+mod fleet;

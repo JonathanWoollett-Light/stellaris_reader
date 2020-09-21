@@ -1,17 +1,23 @@
+use time::Date;
+use crate::shared::Resource;
+
 pub struct Modules {
     standard_event_module: StandardEventModule,
-    standard_economy_module: StandardEconomyModule,
-    standard_leader_module: StandardLeaderModule,
-    standard_diplomacy_module: StandardDiplomacyModule,
-    standard_technology_module: StandardTechnologyModule,
-    standard_pop_factions_module: StandardPopFactionsModule,
-    standard_expansion_module: StandardExpansionModule,
-    standard_species_rights_module: StandardSpeciesRightsModule,
-    standard_trade_routes_module: StandardTradeRoutesModule
+    standard_economy_module: Option<StandardEconomyModule>,
+    standard_leader_module: Option<StandardLeaderModule>,
+    standard_diplomacy_module: Option<StandardDiplomacyModule>,
+    standard_technology_module: Option<StandardTechnologyModule>,
+    standard_pop_factions_module: Option<StandardPopFactionsModule>,
+    standard_expansion_module: Option<StandardExpansionModule>,
+    standard_species_rights_module: Option<StandardSpeciesRightsModule>,
+    standard_trade_routes_module: Option<StandardTradeRoutesModule>,
+
+    exclusive_diplomacy_module: Option<ExclusiveDiplomacyModule>,
+    basic_technology_module: Option<BasicTechnologyModule>
 }
 // -------------------------------------------------
 struct StandardEventModule {
-    delayed_events: Vec<DelayedEvent>
+    delayed_events: Option<Vec<DelayedEvent>>
 }
 struct DelayedEvent {
     event: String,
@@ -21,16 +27,12 @@ struct DelayedEvent {
 struct EventScope {
     r#type: EventScopeType,
     id: u64,
-    random: [u64;2]
-    from: EventFrom
-}
-enum EventScopeType { Country, Planet, Species }
-struct EventFrom {
-    r#type: Option<EventScopeType>,
-    id: u64,
     random: [u64;2],
-    saved_event_targets: Vec<EventTarget>
+    from: Option<Box<EventScope>>,
+    saved_event_targets: Option<Vec<EventTarget>>
 }
+enum EventScopeType { Country, Planet, Species, ArchaeologicalSite }
+
 struct EventTarget {
     r#type: EventScopeType,
     id: u64,
@@ -113,3 +115,11 @@ struct StandardTradeRoutesModule {
     days: u64
 }
 // -------------------------------------------------
+struct ExclusiveDiplomacyModule {
+    contact_rule: Option<ExclusiveDiplomacyModuleContactRule>
+}
+enum ExclusiveDiplomacyModuleContactRule { ScriptOnly }
+// -------------------------------------------------
+struct BasicTechnologyModule {
+    // This can just be empty?
+}
