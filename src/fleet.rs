@@ -1,4 +1,4 @@
-use crate::shared::Coordinate;
+use crate::shared::{Coordinate,Orbital};
 use time::Date;
 
 pub struct Fleet {
@@ -56,7 +56,7 @@ struct FleetStatsCombatStats {
 
 // -------------------------------------------------
 
-enum Orbital { Planet(u64), Starbase(u64) }
+
 
 // -------------------------------------------------
 

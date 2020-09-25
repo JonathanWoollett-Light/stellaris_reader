@@ -1,12 +1,12 @@
 use time::Date;
 use crate::{
-    shared::{Ethos,Flag,Resource},
+    shared::{Ethos,Flag,Resource,EmpireFlag,TypeAndIDDescriptor},
     modules::Modules
 };
 use std::collections::VecDeque;
 
 pub struct Country {
-    flag: CountryFlag,
+    flag: EmpireFlag,
     color_index: i64,
     name: String,
     adjective: String,
@@ -51,7 +51,7 @@ pub struct Country {
     name_list: Option<String>,
     ship_names: Option<Vec<(String,u64)>>,
     ruler: Option<u64>,
-    control_groups: Option<VecDeque<ControlGroup>>,
+    control_groups: Option<VecDeque<TypeAndIDDescriptor>>,
     ship_prefix: Option<String>,
     active_policies: Vec<Policy>,
     policy_flags: Vec<PolicyFlag>,
@@ -86,15 +86,7 @@ pub struct Country {
 
 // --------------------------------------------
 
-struct CountryFlag {
-    icon: Image,
-    background: Image,
-    colors: [Option<String>;4] // Always has 4 strings, but they can be "null"
-}
-struct Image {
-    catagory: String,
-    file: String,
-}
+
 
 // --------------------------------------------
 
@@ -216,13 +208,6 @@ struct Government {
     authrity: String,
     civics: Vec<String>,
     origin: String
-}
-
-// --------------------------------------------
-
-struct ControlGroup {
-    r#type: u64,
-    id: u64
 }
 
 // --------------------------------------------
