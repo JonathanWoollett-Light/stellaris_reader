@@ -1,6 +1,9 @@
+use serde::{Deserialize, Serialize};
 use time::Date;
+
 use crate::shared::Flag;
 
+#[derive(Serialize, Deserialize)]
 pub struct Federation {
     name: String,
     federation_progression: FederationProgression,
@@ -9,6 +12,7 @@ pub struct Federation {
     ship_designs: Vec<u64>,
     leader: u64
 }
+#[derive(Serialize, Deserialize)]
 struct FederationProgression {
     federation_type: String,
     experience: f32,
@@ -35,7 +39,7 @@ struct FederationProgression {
 }
 
 // --------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct Laws {
     law_category_voting_weight: LawCategoryVotingWeight,
     law_category_separate_treaties: LawCategorySeparateTreaties,
@@ -50,47 +54,61 @@ struct Laws {
     law_category_build_fleets: LawCategoryBuildFleets,
     law_category_succession_type: LawCategorySuccessionType
 }
+#[derive(Serialize, Deserialize)]
 enum LawCategoryVotingWeight { VoteWeightEqual }
+#[derive(Serialize, Deserialize)]
 enum LawCategorySeparateTreaties { TreatiesSeparateYes }
+#[derive(Serialize, Deserialize)]
 enum LawCategoryAllowSubjectsToJoin { AllowSubjectsToJoinYes }
+#[derive(Serialize, Deserialize)]
 enum LawCategorySuccessionPower { SuccessionPowerDiplomaticWeight }
+#[derive(Serialize, Deserialize)]
 enum LawCategoryFreeMigration { FreeMigrationNo }
+#[derive(Serialize, Deserialize)]
 enum LawCategoryWarDeclarationVote { DeclareWarMajorityVoteHegemony }
+#[derive(Serialize, Deserialize)]
 enum LawCategorySuccessionTerm { SuccessionTermYears20 }
+#[derive(Serialize, Deserialize)]
 enum LawCategoryFleetContribution { FleetContributionLowHegemony }
+#[derive(Serialize, Deserialize)]
 enum LawCategoryKickMembersVote { KickMembersPresidentVoteHegemony }
+#[derive(Serialize, Deserialize)]
 enum LawCategoryInviteMembersVote { InviteMembersPresidentVoteHegemony }
+#[derive(Serialize, Deserialize)]
 enum LawCategoryCentralization { CentralizationMinimal }
+#[derive(Serialize, Deserialize)]
 enum LawCategoryBuildFleets { FederationBuildFleetsEveryone }
+#[derive(Serialize, Deserialize)]
 enum LawCategorySuccessionType { SuccessionTypeStrongestHegemony }
 
 // --------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct ActionSetting {
     action: String,
     vote_type: VoteType,
     acceptance_type: VoteType // TODO Is this the same enum? Double check this
 }
+#[derive(Serialize, Deserialize)]
 enum VoteType { MajorityVote, Leader, Default }
 
 // --------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct Perk {
     level: u64,
     r#type: String
 }
 
 // --------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct TimedModifier {
     modifier: String,
     days: u64
 }
 
 // --------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 enum SuccessionType { DiplomaticWeight }
 
 // --------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 enum SuccessionTerm { Years20 }

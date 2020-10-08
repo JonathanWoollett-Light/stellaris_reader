@@ -1,5 +1,8 @@
+use serde::{Deserialize, Serialize};
+
 use crate::shared::{Coordinate,Flag};
 
+#[derive(Serialize, Deserialize)]
 pub struct GalacticObject {
     coordinate: Coordinate,
     r#type: GalacticObjectType,
@@ -24,16 +27,20 @@ pub struct GalacticObject {
     trade_piracy: TradePiracy,
     sector: u64
 }
+#[derive(Serialize, Deserialize)]
 enum GalacticObjectType { Star }
+#[derive(Serialize, Deserialize)]
 struct HyperLane {
     to: u64,
     length: u64,
     brigde: Option<bool>
 }
+#[derive(Serialize, Deserialize)]
 struct TradeHub {
     collected: u64,
     collected_from: Option<u64>
 }
+#[derive(Serialize, Deserialize)]
 struct TradePiracy {
     throughput: f32,
     max: f32,
@@ -41,10 +48,12 @@ struct TradePiracy {
     used: f32,
     targets: Option<Target>
 }
+#[derive(Serialize, Deserialize)]
 struct Target {
     target: u64,
     distance: u64,
 }
+#[derive(Serialize, Deserialize)]
 struct AsteroidBelt {
     r#type: String,
     inner_radius: u64

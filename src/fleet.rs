@@ -1,6 +1,9 @@
-use crate::shared::{Coordinate,Orbital};
+use serde::{Deserialize, Serialize};
 use time::Date;
 
+use crate::shared::{Coordinate,Orbital};
+
+#[derive(Serialize, Deserialize)]
 pub struct Fleet {
     name: String,
     fleet_template: Option<u64>,
@@ -28,7 +31,7 @@ pub struct Fleet {
 }
 
 // -------------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct FleetCombat {
     coordinate: Coordinate,
     formation_pos: FleetCombatFormationPosition,
@@ -36,6 +39,7 @@ struct FleetCombat {
     start_coordinate: Coordinate,
     start_date: Date
 }
+#[derive(Serialize, Deserialize)]
 struct FleetCombatFormationPosition {
     x: f32,
     y: f32,
@@ -44,41 +48,43 @@ struct FleetCombatFormationPosition {
     forward_x: f32,
     forward_y: f32
 }
+#[derive(Serialize, Deserialize)]
 struct FleetCombatFormation { root: i64 /* TODO Should this be an f32? */ }
 
 // -------------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct FleetStats { combat_stats: FleetStatsCombatStats }
+#[derive(Serialize, Deserialize)]
 struct FleetStatsCombatStats {
     fleet: Vec<u64>, // This is placeholder type
     date: Date
 }
 
 // -------------------------------------------------
-
-
-
-// -------------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct FleetOrder {
     order: FleetOrderType,
     sub_order: Option<Box<FleetOrder>>
 }
+#[derive(Serialize, Deserialize)]
 enum FleetOrderType {
     AssistResearchOrder(AssistResearchOrder),
     OrbitPlanetOrder(OrbitPlanetOrder),
     MoveToSystemPointOrder(MoveToSystemPointOrder)
 }
+#[derive(Serialize, Deserialize)]
 struct AssistResearchOrder { planet: u64, order_id: u64 } // TODO Should `order_id` be an option in parent struct?
+#[derive(Serialize, Deserialize)]
 struct OrbitPlanetOrder { orbitable: Orbital }
+#[derive(Serialize, Deserialize)]
 struct MoveToSystemPointOrder { coordinate: Coordinate }
 
 // -------------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 enum FleetStance { Evasive }
 
 // -------------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct FleetMovementManager {
     formation: FleetMovementManagerFormation,
     coordinate: Coordinate,
@@ -90,33 +96,39 @@ struct FleetMovementManager {
     orbit: FleetMovementManagerOrbit,
     last_ftl_jump: FleetMovementManagerLastFTLJump
 }
-
+#[derive(Serialize, Deserialize)]
 struct FleetMovementManagerFormation {
     scale: f32,
     angle: f32,
     r#type: FleetMovementManagerFormationType
 }
+#[derive(Serialize, Deserialize)]
 enum FleetMovementManagerFormationType { Circle, Wedge }
 
+#[derive(Serialize, Deserialize)]
 struct FleetMovementManagerTarget { coordinate: Coordinate }
-
+#[derive(Serialize, Deserialize)]
 enum FleetMovementManagerState { MoveIdle, MoveSystem }
-
+#[derive(Serialize, Deserialize)]
 struct FleetMovementManagerPath {
     node: Option<FleetMovementManagerPathNode>,
     date: Date
 }
+#[derive(Serialize, Deserialize)]
 struct FleetMovementManagerPathNode {
     coordinate: Coordinate,
     ftl: FleetMovementManagerPathNodeFTL
 }
+#[derive(Serialize, Deserialize)]
 enum FleetMovementManagerPathNodeFTL { JumpHyperlane }
 
+#[derive(Serialize, Deserialize)]
 struct FleetMovementManagerOrbit {
     orbitable: Option<Orbital>,
     index: Option<i64>
 }
 
+#[derive(Serialize, Deserialize)]
 struct FleetMovementManagerLastFTLJump {
     from: Coordinate,
     to: u64,
@@ -125,6 +137,7 @@ struct FleetMovementManagerLastFTLJump {
     bypass_from: u64,
     bypass_to: u64
 }
+#[derive(Serialize, Deserialize)]
 enum FleetMovementManagerLastFTLJumpJumpMethod { JumpCount }
 
 // -------------------------------------------------

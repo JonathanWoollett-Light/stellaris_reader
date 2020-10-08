@@ -1,10 +1,14 @@
+use serde::{Deserialize, Serialize};
 use time::Date;
+
+use std::collections::VecDeque;
+
 use crate::{
     shared::{Ethos,Flag,Resource,EmpireFlag,TypeAndIDDescriptor},
     modules::Modules
 };
-use std::collections::VecDeque;
 
+#[derive(Serialize, Deserialize)]
 pub struct Country {
     flag: EmpireFlag,
     color_index: i64,
@@ -89,7 +93,7 @@ pub struct Country {
 
 
 // --------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct TechStatus {
     techs: Vec<Tech>,
     physics_queue: Option<TechQueued>,
@@ -102,15 +106,18 @@ struct TechStatus {
     always_available_tech: Option<String>,
     last_increased_tech: Option<String>,
 }
+#[derive(Serialize, Deserialize)]
 struct Tech {
     technology: String,
     level: u64
 }
+#[derive(Serialize, Deserialize)]
 struct TechAlternatives {
     physics: Vec<String>,
     society: Vec<String>,
     engineering: Vec<String>
 }
+#[derive(Serialize, Deserialize)]
 struct TechQueued {
     progress: f32,
     technology: String,
@@ -118,16 +125,18 @@ struct TechQueued {
 }
 
 // --------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct Budget {
     current_month: CurrentMonth,
     last_month: LastMonth,
 }
+#[derive(Serialize, Deserialize)]
 struct CurrentMonth {
     income: Vec<IncomeExpenseAffect>,
     expenses: Vec<IncomeExpenseAffect>,
     balance: Vec<IncomeExpenseAffect>
 }
+#[derive(Serialize, Deserialize)]
 struct LastMonth {
     income: Vec<IncomeExpenseAffect>,
     expenses: Vec<IncomeExpenseAffect>,
@@ -136,17 +145,19 @@ struct LastMonth {
     extra_expenses: Vec<IncomeExpenseAffect>,
     extra_balance: Vec<IncomeExpenseAffect>
 }
+#[derive(Serialize, Deserialize)]
 struct IncomeExpenseAffect {
     name: String,
     quantities: Vec<Resource>
 }
 
 // --------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct EventChain {
     event_chain: String,
     scope: EventScope
 }
+#[derive(Serialize, Deserialize)]
 struct EventScope {
     r#type: EventType,
     id: u64,
@@ -155,15 +166,17 @@ struct EventScope {
     from: EventScopeRoot,
     prev: EventScopeRoot
 }
+#[derive(Serialize, Deserialize)]
 struct EventScopeRoot {
     r#type: EventType,
     id: u64,
     random: [f32;2]
 }
+#[derive(Serialize, Deserialize)]
 enum EventType { Country,Leader }
 
 // --------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct Research {
     physics: f32,
     society: f32,
@@ -171,7 +184,7 @@ struct Research {
 }
 
 // --------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct TerraIncognita {
     size: u64,
     data: Vec<u64>,
@@ -179,7 +192,7 @@ struct TerraIncognita {
 }
 
 // --------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct AI {
     initialized: bool,
     budget: [f32;4],
@@ -192,7 +205,7 @@ struct AI {
     synced_random_seed: u64,
     synced_random_count: u64,
 }
-
+#[derive(Serialize, Deserialize)]
 struct Attitude {
     country: u64,
     attitude: String,
@@ -202,7 +215,7 @@ struct Attitude {
 }
 
 // --------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct Government {
     r#type: String,
     authrity: String,
@@ -211,14 +224,14 @@ struct Government {
 }
 
 // --------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct Policy {
     policy: String,
     selected: String
 }
 
 // --------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 enum PolicyFlag {
     DiploStancePrimitive, DiploStanceExpansionist,
     UnrestrictedWars,
@@ -235,7 +248,7 @@ enum PolicyFlag {
 }
 
 // --------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct Sector {
     resources: u64,
     monthly_transfer: Vec<f32>, // placeholder, I don't know what goes here
@@ -243,7 +256,7 @@ struct Sector {
 }
 
 // --------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct Faction {
     hostile: Option<bool>,
     needs_border_access: Option<bool>,
@@ -254,19 +267,21 @@ struct Faction {
     primitive: Option<bool>,
     primitive_age: Option<String>
 }
+#[derive(Serialize, Deserialize)]
 enum FactionRangeMeasure { This } // "This" is a replacement for "Self" since Rust doesn't allow "Self"
 
 // --------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct Counter {
     pre_communications_name: preCommunicationsName 
 }
+#[derive(Serialize, Deserialize)]
 struct preCommunicationsName {
     second: u64
 }
 
 // --------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct Relation {
     owner: u64,
     country: u64,

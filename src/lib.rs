@@ -11,3 +11,7 @@ mod country;
 mod federation;
 
 mod fleet;
+
+mod galaxy;
+
+mod leader;

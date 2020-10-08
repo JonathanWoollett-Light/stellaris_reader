@@ -1,17 +1,22 @@
+use serde::{Deserialize, Serialize};
 use time::Date;
-use std::collections::VecDeque;
+
+use std::collections::{VecDeque,HashSet};
+
 use crate::{
     galactic_object::GalacticObject,
     country::Country,
     federation::Federation,
     fleet::Fleet,
-    shared::{Coordinate,Flag,Ethos,Orbital,TypeAndIDDescriptor,EmpireFlag}
+    shared::{Coordinate,Flag,Ethos,Orbital,TypeAndIDDescriptor},
+    galaxy::Galaxy,
+    leader::Leader
 };
 
 // Using `VecDeqeque` for sequentially numbered items (0..n)
 
 // The fact like some of this shit is plural and some aint is real dumb
-
+#[derive(Serialize, Deserialize)]
 struct Game {
     version: String,
     version_control_revision: u64,
@@ -66,17 +71,34 @@ struct Game {
     ship_design: VecDeque<ShipDesign>,
     megastructures: VecDeque<Megastructure>,
     bypasses: VecDeque<Bypass>, // I have to write a fucking seperate rule bc some idiot decided putting some fucking random integer and null value in the middle of this list was reasonable
+    natural_wormholes: VecDeque<Wormhole>,
+    sectors: VecDeque<Sector>,
+    buildings: VecDeque<Building>,
+    archaeological_sites: ArchaeologicalSites,
+    global_ship_designs: Vec<GlobalShipDesign>,
+    clusters: Vec<Cluster>,
+    rim_galactic_objects: Vec<u64>,
+    used_color: HashSet<String>, // HashSet is used for when there are multiple fields of the same thing declared, it should be a list, but it isn't
+    used_symbols: Vec<u64>,
+    used_species_names: HashSet<ClassWithOptionalValues>,
+    used_species_portraits: HashSet<ClassWithOptionalValues>,
+    random_seed: i64,
+    random_count: u64,
+    market: Market,
+    trade_routes_manager: Vec<u64>, // placeholder
+    slave_market_manager: Vec<u64>, // placeholder
+    galactic_community: GalacticCommunity
 }
 
 // -------------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct Player {
     name: String,
     country: u32
 }
 
 // -------------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct Species {
     name_list: Vec<String>,
     name: String,
@@ -90,7 +112,7 @@ struct Species {
 }
 
 // -------------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct Nebula {
     coordinate: Coordinate,
     name: String,
@@ -98,7 +120,7 @@ struct Nebula {
     galactic_objects: Vec<u64>
 }
 // -------------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct Construction {
     owner: u32,
     location: ConstructionLocation,
@@ -106,14 +128,16 @@ struct Construction {
     r#type: ConsturctionType,
     disabled: bool
 }
+#[derive(Serialize, Deserialize)]
 struct ConstructionLocation {
     r#type: u64,
     id :u64
 }
+#[derive(Serialize, Deserialize)]
 enum ConsturctionType { Planet, Army }
 
 // -------------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct Pop {
     species_index:u64,
     ethos: Ethos,
@@ -129,7 +153,7 @@ struct Pop {
 }
 
 // -------------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct Starbase {
     level: String,
     modules: VecDeque<String>,
@@ -143,7 +167,7 @@ struct Starbase {
 }
 
 // -------------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct Planet {
     name: String,
     custom_name: Option<bool>,
@@ -182,63 +206,7 @@ struct Planet {
 }
 
 // -------------------------------------------------
-
-struct Leader{
-    name: LeaderName,
-    species_index: u64,
-    portrait: String,
-    gender: Gender,
-    country: u64,
-    creator: u64,
-    class: String,
-    experience: Option<f32>,
-    level: u64,
-    location: Location,
-    pre_ruler_location: Option<Location>,
-    date: Date,
-    age: u64,
-    agenda: String,
-    design: Option<LeaderDesign>,
-    mandate: Option<String>,
-    roles: LeaderRoles,
-}
-
-struct LeaderName {
-    first_name: String,
-    second_name: Option<String>
-}
-
-enum Gender { Male, Female }
-
-struct Location {
-    r#type: LocationType,
-    area: Option<LocationArea>,
-    assignment: Option<u64>, // u64 is placeholder
-    id: u64
-}
-enum LocationType { Sector, Planet, Tech, Ship }
-enum LocationArea { Physics, Engineering, Society }
-
-struct LeaderDesign {
-    gender: Gender,
-    name: String,
-    protrait: String,
-    texture: u64,
-    hair: u64,
-    clothes: u64,
-    leader_class: String
-}
-
-struct LeaderRoles {
-    admiral: Vec<String>,
-    general: Vec<String>,
-    scientist: Vec<String>,
-    governor: Vec<String>,
-    ruler: Vec<String>
-}
-
-// -------------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct Ship {
     fleet: u64,
     name: String,
@@ -268,12 +236,13 @@ struct Ship {
     enable_at_health: Option<f32>,
     leader: Option<u64>
 }
-
+#[derive(Serialize, Deserialize)]
 struct ShipSection {
     design: String,
     slot: String,
     weapons: Option<Vec<ShipSectionWeapon>>
 }
+#[derive(Serialize, Deserialize)]
 struct ShipSectionWeapon {
     index: u64,
     template: String,
@@ -281,7 +250,7 @@ struct ShipSectionWeapon {
 }
 
 // -------------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct FleetTemplate {
     fleet: u64,
     home_base: Orbital,
@@ -290,13 +259,14 @@ struct FleetTemplate {
     count: u64,
     fleet_size: u64
 }
+#[derive(Serialize, Deserialize)]
 struct FleetTemplateDesign {
     design: u64,
     count: u64
 }
 
 // -------------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct Army {
     name: String,
     r#type: String,
@@ -311,7 +281,7 @@ struct Army {
 }
 
 // -------------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct Deposit {
     r#type: String,
     swap_type: Option<String>,
@@ -319,13 +289,13 @@ struct Deposit {
 }
 
 // -------------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct AmbientObject {
     coordinate: Coordinate,
     data: String,
     properties: AmbientObjectProperties
 }
-
+#[derive(Serialize, Deserialize)]
 struct AmbientObjectProperties {
     coordinate: Coordinate,
     attach: TypeAndIDDescriptor,
@@ -335,7 +305,7 @@ struct AmbientObjectProperties {
 }
 
 // -------------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct RandomNameDatabase {
     species_modification_prefix: Vec<String>,
     species_modification_postfix: Vec<String>,
@@ -347,107 +317,17 @@ struct RandomNameDatabase {
 }
 
 // -------------------------------------------------
-
-struct Galaxy {
-    template: String,
-    shape: GalaxyShape,
-    num_empires: u64,
-    num_advanced_empires: u64,
-    num_fallen_empires: u64,
-    num_marauder_empires: u64,
-    habitability: u64,
-    primitive: u64,
-    advanced_start_near_player: bool,
-    caravaneers_enabled: bool,
-    xeno_compatibility_enabled: bool,
-    scaling: bool,
-    crises: f32,
-    technology: f32,
-    clustered: bool,
-    random_empires: bool,
-    random_fallen_empires: bool,
-    random_advanced_empires: bool,
-    core_radius: u64,
-    player_locations: GalaxyPlayerLocations,
-    difficulty: GalaxyDifficulty,
-    aggressiveness: GalaxyAggressiveness,
-    name: String,
-    ironman: bool,
-    num_gateways: f32,
-    num_wormhole_pairs: f32,
-    num_hyperlanes: f32,
-    mid_game_start: u64,
-    end_game_start: u64,
-    victory_year: u64,
-    num_guaranteed_colonies: u64,
-    design: Vec<GalaxyDesign>
-}
-
-enum GalaxyShape { Elliptical }
-enum GalaxyPlayerLocations { Normal }
-enum GalaxyDifficulty { Cadet, Ensign, Captain, Commodore, Admiral, GrandAdmiral }
-enum GalaxyAggressiveness { Normal }
-
-// Kinda a dumb fucking name when this struct is basically just a copy of the `Country` struct
-struct GalaxyDesign {
-    key: String,
-    ship_pefix: String,
-    species: GalaxyDesignSpecies,
-    secondary_species: Option<GalaxyDesignSpecies>,
-    name: String,
-    adjective: String,
-    authority: String,
-    flags: Option<Vec<String>>,
-    government: String,
-    planet_name: String,
-    planet_class: String,
-    system_name: String,
-    initilizer: String,
-    graphical_culture: String,
-    city_graphical_culture: String,
-    empire_flag: EmpireFlag,
-    ruler: GalaxyDesignRuler,
-    spawn_as_fallen: bool,
-    ignore_portrait_duplication: bool,
-    room: String,
-    spawn_enabled: bool,
-    ethic: Vec<String>,
-    civics: Vec<String>,
-    origin: String
-}
-struct GalaxyDesignSpecies {
-    class: String,
-    protrait: String,
-    name: String,
-    plural: String,
-    adjective: String,
-    name_list: String,
-    r#trait: Option<Vec<String>>
-}
-struct GalaxyDesignRuler {
-    gender: Gender,
-    name: String,
-    portrait: String,
-    texture: u64,
-    hair: u64,
-    clothes: u64,
-    ruler_title: Option<String>,
-    ruler_title_female: Option<String>,
-    leader_class: String
-}
-
-// -------------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct SavedEventTarget {
     r#type: SavedEventTargetType,
     id: u64,
     name: String
 }
-
+#[derive(Serialize, Deserialize)]
 enum SavedEventTargetType { Country, Fleet, Planet, GalacticObject }
 
 // -------------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct ShipDesign {
     name: String,
     ship_size: String,
@@ -456,18 +336,20 @@ struct ShipDesign {
     initial_design: Option<bool>,
     required_component: Option<Vec<String>>
 }
+#[derive(Serialize, Deserialize)]
 struct ShipDesignSection {
     template: String,
     slot: String,
     component: Vec<ShipDesignSectionComponent>
 }
+#[derive(Serialize, Deserialize)]
 struct ShipDesignSectionComponent {
     slot: String,
     template: String
 }
 
 // -------------------------------------------------
-
+#[derive(Serialize, Deserialize)]
 struct Megastructure {
     r#type: String,
     coordinate: Coordinate,
@@ -478,5 +360,95 @@ struct Megastructure {
 }
 
 // -------------------------------------------------
+#[derive(Serialize, Deserialize)]
+struct Bypass {
+    r#type: String,
+    active: bool,
+    linked_to: u64,
+    connections: Vec<u64>,
+    active_connections: Vec<u64>,
+    owner: TypeAndIDDescriptor
+}
 
-struct Bypass
+// -------------------------------------------------
+#[derive(Serialize, Deserialize)]
+struct Wormhole {
+    coordinate: Coordinate,
+    bypass: u64
+}
+
+// -------------------------------------------------
+#[derive(Serialize, Deserialize)]
+struct Sector {
+    name: String,
+    systems: Vec<u64>,
+    local_capital: u64,
+    governor: u64,
+    owner: u64,
+    resources: u64,
+    r#stype: String
+}
+
+// -------------------------------------------------
+#[derive(Serialize, Deserialize)]
+struct Building {
+    r#type: String
+}
+
+// -------------------------------------------------
+#[derive(Serialize, Deserialize)]
+struct ArchaeologicalSites {
+    sites: VecDeque<Site>
+}
+#[derive(Serialize, Deserialize)]
+struct Site {
+    location: TypeAndIDDescriptor,
+    last_excavator_country: u64,
+    excavator_fleet: u64,
+    r#type: String,
+    index: u64,
+    clues: u64,
+    last_roll: u64,
+    days_left: u64,
+    difficulty: u64,
+    locked: bool,
+    visible_to: Vec<u64>
+}
+
+// -------------------------------------------------
+#[derive(Serialize, Deserialize)]
+struct GlobalShipDesign {
+    name: String,
+    ship_design: u64
+}
+
+// -------------------------------------------------
+#[derive(Serialize, Deserialize)]
+struct Cluster {
+    id: String,
+    position: Coordinate,
+    radius: u64,
+    objects: Vec<u64>
+}
+
+// -------------------------------------------------
+#[derive(Serialize, Deserialize, Hash,Eq,PartialEq)]
+struct ClassWithOptionalValues {
+    class: String,
+    values: Option<Vec<u64>>
+}
+
+// -------------------------------------------------
+#[derive(Serialize, Deserialize)]
+struct Market {
+    id: Vec<u64>,
+    next_monthly_trade_item_id: u64,
+    country: u64
+}
+
+
+// -------------------------------------------------
+#[derive(Serialize, Deserialize)]
+struct GalacticCommunity {
+    election: u64
+}
